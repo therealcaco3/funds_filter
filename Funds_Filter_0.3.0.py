@@ -1,7 +1,3 @@
-pip install pandas
-pip install streamlit
-pip install openpyxl
-
 import openpyxl
 from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
