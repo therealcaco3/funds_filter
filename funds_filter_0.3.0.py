@@ -7,11 +7,11 @@ import streamlit as st
 from st_aggrid import AgGrid
 
 # Convert and extract data from the selected worksheet
-def data_organize(file_path, selected_sheet_name):
+def data_organize(file_path, sheet_name):
     # Check the selected sheet
-    if selected_sheet_name == '境內(TWD計價) -  ':
+    if sheet_name == '境內(TWD計價) -  ':
         # Load the Domestic worksheet into a DataFrame, excluding columns F(5) and G(6) 
-        df = pd.read_excel(file_path, sheet_name=selected_sheet_name, header=None,
+        df = pd.read_excel(file_path, sheet_name, header=None,
                             skiprows=11,    # starts from A12, so skip the first 11 rows
                             usecols=lambda x: x not in [5, 6])   # column indices in pandas are zero-based, so F = 5, G = 6.
     
@@ -31,9 +31,9 @@ def data_organize(file_path, selected_sheet_name):
         last_row_index = df['理柏 ID'].last_valid_index()
         data = df.loc[:last_row_index]
 
-    elif selected_sheet_name == '境外(USD計價) -  ':
+    elif sheet_name == '境外(USD計價) -  ':
         # Load the Overseas worksheet into a DataFrame, excluding columns A(0)
-        df = pd.read_excel(file_path, sheet_name=selected_sheet_name, header=None,
+        df = pd.read_excel(file_path, sheet_name=sheet_name, header=None,
                         skiprows=11,    # starts from A12, so skip the first 11 rows
                         usecols=lambda x: x not in [0])   # column indices in pandas are zero-based
 
@@ -53,7 +53,7 @@ def data_organize(file_path, selected_sheet_name):
         # Determine the last row based on the presence of data in column B
         last_row_index = df['理柏 ID'].last_valid_index()
         data = df.loc[:last_row_index]
-    
+
     return data
 
 
@@ -86,9 +86,6 @@ def funds_filter(sheet_name, data, classification, figures, thresholds):
                         (filtered_results[figures[i]].notna()) &
                         (filtered_results[figures[i]] <= filtered_results[figures[i]].quantile(thresholds[i]))]
     
-    # converting '排名' columns from float to int
-    rank_cols = [r for r in filtered_results.columns if '排名' in r]
-    filtered_results[rank_cols] = filtered_results[rank_cols].apply(pd.to_numeric, downcast='integer', errors='ignore')
 
     return filtered_results
 
@@ -129,7 +126,7 @@ if uploaded_file is not None:
     rank_5Y = st.number_input(label = '請輸入5Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
     rank_10Y = st.number_input(label = '請輸入10Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
 
-    selected_sheet_name = '境外(USD計價) -  ' if sheet_input == '境外(USD計價) -  ' else '境內(TWD計價) -  '
+    selected_sheet_name = sheet_input
     figures = ['1M排名', '3M排名', '6M排名', '1Y排名', '2Y排名', '3Y排名', '5Y排名', '10Y排名']
     thresholds = [rank_1M, rank_3M, rank_6M, rank_1Y, rank_2Y, rank_3Y, rank_5Y, rank_10Y]
 
