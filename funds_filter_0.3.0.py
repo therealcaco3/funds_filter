@@ -138,7 +138,6 @@ if uploaded_file is not None:
     st.markdown("#### 篩選結果及其排名(可按住Shift鍵+滾輪滑動表格)")
     # Display the merged dataframe with horizontal scrollbar
     AgGrid(result)
-    st.table(result)
 
     # Display the filtered results
     st.markdown("#### 篩選結果及其排名(st.table ver)(可按住Shift鍵+滾輪滑動表格)")
