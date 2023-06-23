@@ -109,12 +109,12 @@ file_path = st.file_uploader("上傳 .xlsx 檔案", type=".xlsx")
 
 if file_path is not None:
     # Read the uploaded file
-    datas = pd.read_excel(file_path, sheet_name=None)
-    sheet_names = datas.keys()
+    wb = pd.read_excel(file_path, sheet_name=None)
+    sheet_names = wb.keys()
     sheet_input = st.selectbox("請選擇工作表：", list(sheet_names))
 
     if sheet_input in sheet_names:
-        selected_data = datas[sheet_input]
+        # selected_data = wb[sheet_input]
         # Perform data processing and filtering based on the selected sheet and other inputs
         classification = st.text_input("請選擇基金分類：")
 
