@@ -77,13 +77,6 @@ def funds_filter(sheet_name, data, classification, figures, thresholds):
     # Convert thresholds from percentage to decimal values
     thresholds_divide = [float(t) / 100 for t in thresholds]
 
-    # if threshold is 100%, then delete the figure & the threshold(since the user don't need this filter)
-    for n in range(8):
-        if thresholds_divide[n] == 100:
-            figures.pop(n)
-            thresholds_divide.pop(n)
-
-
     # Apply the user-defined thresholds to filter the securities
     filtered_results = filtered_figures.loc[
                         (filtered_figures[figures[0]]) &
