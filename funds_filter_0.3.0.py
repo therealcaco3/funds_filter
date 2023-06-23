@@ -1,3 +1,4 @@
+import io
 import openpyxl
 from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
@@ -109,7 +110,8 @@ file_path = st.file_uploader("上傳 .xlsx 檔案", type=".xlsx")
 
 if file_path is not None:
     # Read the uploaded file
-    wb = pd.read_excel(file_path, sheet_name=None)
+    file_content = uploaded_file.read()
+    wb = pd.read_excel(io.BytesIO(file_content), sheet_name=None)
     sheet_names = wb.keys()
     sheet_input = st.selectbox("請選擇工作表：", list(sheet_names))
 
@@ -132,7 +134,7 @@ if file_path is not None:
     thresholds = [rank_1M, rank_3M, rank_6M, rank_1Y, rank_2Y, rank_3Y, rank_5Y, rank_10Y]
 
     # Execute the filter functions
-    data = data_organize(file_path, sheet_name)
+    data = data_organize(io.BytesIO(file_content), sheet_name)
     result = funds_filter(sheet_name, data, classification, figures, thresholds)
 
     # Display the filtered results
