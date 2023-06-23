@@ -77,18 +77,25 @@ def funds_filter(sheet_name, data, classification, figures, thresholds):
     # Convert thresholds from percentage to decimal values
     thresholds_divide = [float(t) / 100 for t in thresholds]
 
+    # if threshold is 100%, then delete the figure & the threshold(since the user don't need this filter)
+    for n in range(8):
+        if thresholds_divide[n] == 100:
+            figures.pop(n)
+            thresholds_divide.pop(n)
+
+
     # Apply the user-defined thresholds to filter the securities
     filtered_results = filtered_figures.loc[
-                        (filtered_figures[figures[0]].notna()) &
+                        (filtered_figures[figures[0]]) &
                         (filtered_figures[figures[0]] <= filtered_figures[figures[0]].quantile(thresholds_divide[0]))]
     for i in range(1, len(figures)):
         filtered_results = filtered_results.loc[
-                        (filtered_results[figures[i]].notna()) &
+                        (filtered_results[figures[i]]) &
                         (filtered_results[figures[i]] <= filtered_results[figures[i]].quantile(thresholds_divide[i]))]
         
     # converting '排名' columns from float to int
     rank_cols = [c for c in filtered_results.columns if '排名' in c]
-    filtered_results[rank_cols] = filtered_results[rank_cols].apply(pd.to_numeric, downcast='integer', errors='coerce')    
+    filtered_results[rank_cols] = filtered_results[rank_cols].apply(pd.to_numeric, downcast='integer', errors='ignore')    
 
     return filtered_results
 
@@ -138,6 +145,7 @@ if uploaded_file is not None:
     st.markdown("#### 篩選結果及其排名(可按住Shift鍵+滾輪滑動表格)")
     # Display the merged dataframe with horizontal scrollbar
     AgGrid(result)
+    st.table(result)
 
     # Display the filtered results
     st.markdown("#### 篩選結果及其排名(st.table ver)(可按住Shift鍵+滾輪滑動表格)")
