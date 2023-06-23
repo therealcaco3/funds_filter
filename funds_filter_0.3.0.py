@@ -113,47 +113,45 @@ if file_path is not None:
     sheet_names = wb.keys()
     sheet_input = st.selectbox("請選擇工作表：", list(sheet_names))
 
-    if sheet_input in sheet_names:
-        # selected_data = wb[sheet_input]
-        # Perform data processing and filtering based on the selected sheet and other inputs
-        classification = st.text_input("請選擇基金分類：")
+    # Perform data processing and filtering based on the selected sheet and other inputs
+    classification = st.text_input("請選擇基金分類：")
 
-        # Users enter thresholds for each rank
-        st.header('請輸入各數據排名欲取的報酬率百分比，例：取報酬率排名前50%的基金，請輸入"50"；預設為100%')
-        rank_1M = st.number_input(label = '請輸入1M報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
-        rank_3M = st.number_input(label = '請輸入3M報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
-        rank_6M = st.number_input(label = '請輸入6M報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
-        rank_1Y = st.number_input(label = '請輸入1Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
-        rank_2Y = st.number_input(label = '請輸入2Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
-        rank_3Y = st.number_input(label = '請輸入3Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
-        rank_5Y = st.number_input(label = '請輸入5Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
-        rank_10Y = st.number_input(label = '請輸入10Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
+    # Users enter thresholds for each rank
+    st.header('請輸入各數據排名欲取的報酬率百分比，例：取報酬率排名前50%的基金，請輸入"50"；預設為100%')
+    rank_1M = st.number_input(label = '請輸入1M報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
+    rank_3M = st.number_input(label = '請輸入3M報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
+    rank_6M = st.number_input(label = '請輸入6M報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
+    rank_1Y = st.number_input(label = '請輸入1Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
+    rank_2Y = st.number_input(label = '請輸入2Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
+    rank_3Y = st.number_input(label = '請輸入3Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
+    rank_5Y = st.number_input(label = '請輸入5Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
+    rank_10Y = st.number_input(label = '請輸入10Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
 
-        sheet_name = '境內(TWD計價) -  ' if sheet_input == "境內(TWD計價) -" else '境外(USD計價) -  '
-        figures = ['1M排名', '3M排名', '6M排名', '1Y排名', '2Y排名', '3Y排名', '5Y排名', '10Y排名']
-        thresholds = [rank_1M, rank_3M, rank_6M, rank_1Y, rank_2Y, rank_3Y, rank_5Y, rank_10Y]
+    sheet_name = '境內(TWD計價) -  ' if sheet_input == "境內(TWD計價) -" else '境外(USD計價) -  '
+    figures = ['1M排名', '3M排名', '6M排名', '1Y排名', '2Y排名', '3Y排名', '5Y排名', '10Y排名']
+    thresholds = [rank_1M, rank_3M, rank_6M, rank_1Y, rank_2Y, rank_3Y, rank_5Y, rank_10Y]
 
-        # Execute the filter functions
-        data = data_organize(file_path, sheet_name)
-        result = funds_filter(sheet_name, data, classification, figures, thresholds)
+    # Execute the filter functions
+    data = data_organize(file_path, sheet_name)
+    result = funds_filter(sheet_name, data, classification, figures, thresholds)
 
-        # Display the filtered results
-        st.markdown("#### 篩選結果及其排名(可按住Shift鍵+滾輪滑動表格)")
-        # Display the merged dataframe with horizontal scrollbar
-        AgGrid(result)
+    # Display the filtered results
+    st.markdown("#### 篩選結果及其排名(可按住Shift鍵+滾輪滑動表格)")
+    # Display the merged dataframe with horizontal scrollbar
+    AgGrid(result)
 
-        # Merge the two dataframes based on the "名稱" column
-        merged_data = pd.merge(result['名稱'], data, on='名稱')
+    # Merge the two dataframes based on the "名稱" column
+    merged_data = pd.merge(result['名稱'], data, on='名稱')
 
-        # Display the merged dataframe
-        st.markdown("#### 篩選結果及其完整數據(可按住Shift鍵+滾輪滑動表格)")
-        # Display the merged dataframe with horizontal scrollbar
-        AgGrid(merged_data)
+    # Display the merged dataframe
+    st.markdown("#### 篩選結果及其完整數據(可按住Shift鍵+滾輪滑動表格)")
+    # Display the merged dataframe with horizontal scrollbar
+    AgGrid(merged_data)
 
-        # Export the filtered results to a new csv file (if button is clicked)
-        if st.button("將篩選結果輸出至 CSV"):
-            # Export the filtered results to a new csv file
-            csv_data = merged_data.to_csv(encoding='utf_8_sig', index=False)
-            csv_filename = f'篩選結果_{classification}.csv'
-            # Display a download button
-            st.download_button(label="Download CSV", data=csv_data, file_name=csv_filename, mime='text/csv')
+    # Export the filtered results to a new csv file (if button is clicked)
+    if st.button("將篩選結果輸出至 CSV"):
+        # Export the filtered results to a new csv file
+        csv_data = merged_data.to_csv(encoding='utf_8_sig', index=False)
+        csv_filename = f'篩選結果_{classification}.csv'
+        # Display a download button
+        st.download_button(label="Download CSV", data=csv_data, file_name=csv_filename, mime='text/csv')
