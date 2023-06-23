@@ -140,6 +140,11 @@ if uploaded_file is not None:
     # Display the merged dataframe with horizontal scrollbar
     AgGrid(result)
 
+    # Display the filtered results
+    st.markdown("#### 篩選結果及其排名(st.table ver)(可按住Shift鍵+滾輪滑動表格)")
+    # Display the merged dataframe with horizontal scrollbar
+    st.table(result)
+
     # Merge the two dataframes based on the "名稱" column
     merged_data = pd.merge(result['名稱'], data, on='名稱')
 
