@@ -88,7 +88,7 @@ def funds_filter(sheet_name, data, classification, figures, thresholds):
         
     # converting '排名' columns from float to int
     rank_cols = [c for c in filtered_results.columns if '排名' in c]
-    filtered_results[rank_cols] = filtered_results[rank_cols].apply(pd.to_numeric, downcast='integer', errors='ignore')    
+    filtered_results[rank_cols] = filtered_results[rank_cols].apply(pd.to_numeric, downcast='integer', errors='coerce')    
 
     return filtered_results
 
