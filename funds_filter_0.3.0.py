@@ -28,8 +28,8 @@ def data_organize(file_path, selected_sheet_name):
         df = df.reset_index(drop=True)
 
         # Determine the last row based on the presence of data in column B
-        last_row_index = df['理柏 ID'].last_valid_index()
-        data = df.loc[:last_row_index]
+        # last_row_index = df['理柏 ID'].last_valid_index()
+        # data = df.loc[:last_row_index]
 
     elif selected_sheet_name == '境外(USD計價) -  ':
         # Load the Overseas worksheet into a DataFrame, excluding columns A(0)
