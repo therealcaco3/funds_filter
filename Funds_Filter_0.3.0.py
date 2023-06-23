@@ -1,6 +1,6 @@
-!pip install pandas
-!pip install streamlit
-!pip install openpyxl
+pip install pandas
+pip install streamlit
+pip install openpyxl
 
 import openpyxl
 from openpyxl.styles import Font
