@@ -152,6 +152,8 @@ if file_path is not None:
 
         # Export the filtered results to a new csv file (if button is clicked)
         if st.button("將篩選結果輸出至 CSV"):
-            file_name = f'篩選結果_{sheet_input}.csv'
-            merged_data.to_csv(file_name, encoding='utf_8_sig', index=False)
-            st.success(f"已將篩選結果輸出至 {file_name}！")
+            # Export the filtered results to a new csv file
+            csv_data = merged_data.to_csv(encoding='utf_8_sig', index=False)
+            csv_filename = f'篩選結果_{classification}.csv'
+            # Display a download button
+            st.download_button(label="Download CSV", data=csv_data, file_name=csv_filename, mime='text/csv')
