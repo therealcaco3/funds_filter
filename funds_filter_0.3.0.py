@@ -77,14 +77,23 @@ def funds_filter(sheet_name, data, classification, figures, thresholds):
     # Convert thresholds from percentage to decimal values
     thresholds = [float(t) / 100 for t in thresholds]
 
+    # create another list of figures that users actually need
+    sel_figures = []
+    sel_thresholds = []
+    for n in range(8):
+        if thresholds[n] != 1:
+            sel_figures.append(figures[n])
+            sel_thresholds.append(thresholds[n])
+
+
     # Apply the user-defined thresholds to filter the securities
     filtered_results = filtered_figures.loc[
-                        (filtered_figures[figures[0]].notna()) &
-                        (filtered_figures[figures[0]] <= filtered_figures[figures[0]].quantile(thresholds[0]))]
+                        (filtered_figures[sel_figures[0]].notna()) &
+                        (filtered_figures[sel_figures[0]] <= filtered_figures[sel_figures[0]].quantile(sel_thresholds[0]))]
     for i in range(1, len(figures)):
         filtered_results = filtered_results.loc[
-                        (filtered_results[figures[i]].notna()) &
-                        (filtered_results[figures[i]] <= filtered_results[figures[i]].quantile(thresholds[i]))]
+                        (filtered_results[sel_figures[i]].notna()) &
+                        (filtered_results[sel_figures[i]] <= filtered_results[sel_figures[i]].quantile(sel_thresholds[i]))]
     
     # converting '排名' columns from float to int
     rank_cols = [r for r in filtered_results.columns if '排名' in r]
