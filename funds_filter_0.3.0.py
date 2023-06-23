@@ -85,7 +85,10 @@ def funds_filter(sheet_name, data, classification, figures, thresholds):
         filtered_results = filtered_results.loc[
                         (filtered_results[figures[i]].notna()) &
                         (filtered_results[figures[i]] <= filtered_results[figures[i]].quantile(thresholds[i]))]
-    
+        
+    # converting '排名' columns from float to int
+    rank_cols = [c for c in filtered_results.columns if '排名' in c]
+    filtered_results[rank_cols] = filtered_results[rank_cols].apply(pd.to_numeric, downcast='integer', errors='ignore')    
 
     return filtered_results
 
@@ -100,17 +103,15 @@ st.set_page_config(
 
 st.title('基金篩選器')
 
-
 # User input using Streamlit
 st.markdown("#### 請上傳檔案：")
 uploaded_file = st.file_uploader("上傳 .xlsx 檔案", type=".xlsx")
-
 if uploaded_file is not None:
     # Read the uploaded file
     file_content = uploaded_file.read()
     wb = pd.read_excel(io.BytesIO(file_content), sheet_name=None)
-    sheet_names = wb.keys()
-    sheet_input = st.selectbox("請選擇工作表：", list(sheet_names))
+    worksheet_names = wb.keys()
+    sheet_input = st.selectbox("請選擇工作表：", list(worksheet_names))
     
     # Perform data processing and filtering based on the selected sheet and other inputs
     classification = st.text_input("請選擇基金分類：")
