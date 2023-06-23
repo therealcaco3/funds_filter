@@ -127,18 +127,18 @@ if uploaded_file is not None:
     rank_5Y = st.number_input(label = '請輸入5Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
     rank_10Y = st.number_input(label = '請輸入10Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
 
-    selected_sheet_name = sheet_input
     figures = ['1M排名', '3M排名', '6M排名', '1Y排名', '2Y排名', '3Y排名', '5Y排名', '10Y排名']
     thresholds = [rank_1M, rank_3M, rank_6M, rank_1Y, rank_2Y, rank_3Y, rank_5Y, rank_10Y]
 
     # Execute the filter functions
-    data = data_organize(uploaded_file, selected_sheet_name)
-    result = funds_filter(selected_sheet_name, data, classification, figures, thresholds)
+    data = data_organize(uploaded_file, sheet_input)
+    result = funds_filter(sheet_input, data, classification, figures, thresholds)
 
     # Display the filtered results
     st.markdown("#### 篩選結果及其排名(可按住Shift鍵+滾輪滑動表格)")
     # Display the merged dataframe with horizontal scrollbar
     AgGrid(result)
+    st.table(result)
 
     # Display the filtered results
     st.markdown("#### 篩選結果及其排名(st.table ver)(可按住Shift鍵+滾輪滑動表格)")
