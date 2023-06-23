@@ -75,16 +75,16 @@ def funds_filter(sheet_name, data, classification, figures, thresholds):
     filtered_figures = pd.concat([names, filtered_figures], axis=1)
 
     # Convert thresholds from percentage to decimal values
-    thresholds = [float(t) / 100 for t in thresholds]
+    thresholds_divide = [float(t) / 100 for t in thresholds]
 
     # Apply the user-defined thresholds to filter the securities
     filtered_results = filtered_figures.loc[
                         (filtered_figures[figures[0]].notna()) &
-                        (filtered_figures[figures[0]] <= filtered_figures[figures[0]].quantile(thresholds[0]))]
+                        (filtered_figures[figures[0]] <= filtered_figures[figures[0]].quantile(thresholds_divide[0]))]
     for i in range(1, len(figures)):
         filtered_results = filtered_results.loc[
                         (filtered_results[figures[i]].notna()) &
-                        (filtered_results[figures[i]] <= filtered_results[figures[i]].quantile(thresholds[i]))]
+                        (filtered_results[figures[i]] <= filtered_results[figures[i]].quantile(thresholds_divide[i]))]
         
     # converting '排名' columns from float to int
     rank_cols = [c for c in filtered_results.columns if '排名' in c]
@@ -139,6 +139,11 @@ if uploaded_file is not None:
     st.markdown("#### 篩選結果及其排名(可按住Shift鍵+滾輪滑動表格)")
     # Display the merged dataframe with horizontal scrollbar
     AgGrid(result)
+
+    # Display the filtered results
+    st.markdown("#### 篩選結果及其排名(st.table ver)(可按住Shift鍵+滾輪滑動表格)")
+    # Display the merged dataframe with horizontal scrollbar
+    st.table(result)
 
     # Merge the two dataframes based on the "名稱" column
     merged_data = pd.merge(result['名稱'], data, on='名稱')
