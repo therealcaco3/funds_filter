@@ -80,7 +80,7 @@ def funds_filter(sheet_name, data, classification, figures, thresholds):
     # create another list of figures that users actually need
     sel_figures = []
     sel_thresholds = []
-    for n in range(8):
+    for n in range(len(figures)):
         if thresholds[n] != 1:
             sel_figures.append(figures[n])
             sel_thresholds.append(thresholds[n])
