@@ -78,12 +78,12 @@ def funds_filter(sheet_name, data, classification, figures, thresholds):
     thresholds = [float(t) / 100 for t in thresholds]
 
     # create another list of figures that users actually need
-    sel_figures = []
-    sel_thresholds = []
-    for n in range(len(figures)):
-        if thresholds[n] != 1:
-            sel_figures.append(figures[n])
-            sel_thresholds.append(thresholds[n])
+    sel_figures = figures
+    sel_thresholds = thresholds
+    # for n in range(len(figures)):
+    #     if thresholds[n] != 1:
+    #         sel_figures.append(figures[n])
+    #         sel_thresholds.append(thresholds[n])
 
 
     # Apply the user-defined thresholds to filter the securities
