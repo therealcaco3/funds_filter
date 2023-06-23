@@ -11,7 +11,7 @@ def data_organize(file_path, sheet_name):
     # Check the selected sheet
     if sheet_name == '境內(TWD計價) -  ':
         # Load the Domestic worksheet into a DataFrame, excluding columns F(5) and G(6) 
-        df = pd.read_excel(file_path, sheet_name, header=None,
+        df = pd.read_excel(file_path, sheet_name=sheet_name, header=None,
                             skiprows=11,    # starts from A12, so skip the first 11 rows
                             usecols=lambda x: x not in [5, 6])   # column indices in pandas are zero-based, so F = 5, G = 6.
     
@@ -114,8 +114,7 @@ if uploaded_file is not None:
     wb = pd.read_excel(io.BytesIO(file_content), sheet_name=None)
     sheet_names = wb.keys()
     sheet_input = st.selectbox("請選擇工作表：", list(sheet_names))
-    sheet_input = sheet_input.strip()  # Remove leading and trailing whitespace
-
+    
     # Perform data processing and filtering based on the selected sheet and other inputs
     classification = st.text_input("請選擇基金分類：")
 
@@ -130,7 +129,7 @@ if uploaded_file is not None:
     rank_5Y = st.number_input(label = '請輸入5Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
     rank_10Y = st.number_input(label = '請輸入10Y報酬率排名百分比：', value = 100, max_value = 100, min_value = 0)
 
-    sheet_name = '境內(TWD計價) -  ' if sheet_input == "境內(TWD計價) -" else '境外(USD計價) -  '
+    sheet_name = '境內(TWD計價) -  ' if sheet_input == '境內(TWD計價) -  ' else '境外(USD計價) -  '
     figures = ['1M排名', '3M排名', '6M排名', '1Y排名', '2Y排名', '3Y排名', '5Y排名', '10Y排名']
     thresholds = [rank_1M, rank_3M, rank_6M, rank_1Y, rank_2Y, rank_3Y, rank_5Y, rank_10Y]
 
