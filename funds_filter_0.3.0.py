@@ -110,7 +110,7 @@ file_path = st.file_uploader("上傳 .xlsx 檔案", type=".xlsx")
 
 if file_path is not None:
     # Read the uploaded file
-    file_content = uploaded_file.read()
+    file_content = file_path.read()
     wb = pd.read_excel(io.BytesIO(file_content), sheet_name=None)
     sheet_names = wb.keys()
     sheet_input = st.selectbox("請選擇工作表：", list(sheet_names))
