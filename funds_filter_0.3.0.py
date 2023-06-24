@@ -75,24 +75,24 @@ def funds_filter(sheet_name, data, classification, figures, thresholds):
     filtered_figures = pd.concat([names, filtered_figures], axis=1)
 
     # Convert thresholds from percentage to decimal values
-    thresholds = [float(t) / 100 for t in thresholds]
+    thresholds_divide = [float(t) / 100 for t in thresholds]
 
     # create another list of figures that users actually need
     sel_figures = [figures[0]]
-    sel_thresholds = [thresholds[0]]
+    sel_thresholds = [thresholds_divide[0]]
 
     for n in range(1, len(figures)):
-        if thresholds[n] != 1:
+        if thresholds_divide[n] != 1:
             sel_figures.append(figures[n])
-            sel_thresholds.append(thresholds[n])
+            sel_thresholds.append(thresholds_divide[n])
 
     # Apply the user-defined thresholds to filter the securities
     filtered_results = filtered_figures.loc[
-                        (filtered_figures[sel_figures[0]]) &
+                        (filtered_figures[sel_figures[0]].notna()) &
                         (filtered_figures[sel_figures[0]] <= filtered_figures[sel_figures[0]].quantile(sel_thresholds[0]))]
     for i in range(1, len(sel_figures)):
         filtered_results = filtered_results.loc[
-                        (filtered_results[sel_figures[i]]) &
+                        (filtered_results[sel_figures[i]].notna()) &
                         (filtered_results[sel_figures[i]] <= filtered_results[sel_figures[i]].quantile(sel_thresholds[i]))]
     
     # converting '排名' columns from float to int
