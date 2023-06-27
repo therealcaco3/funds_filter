@@ -3,6 +3,7 @@ import openpyxl
 from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
 import pandas as pd
+import numpy as np
 import streamlit as st
 from st_aggrid import AgGrid
 
@@ -14,22 +15,24 @@ def data_organize(file_path, selected_sheet_name):
         df = pd.read_excel(file_path, sheet_name=selected_sheet_name, header=None,
                             skiprows=11,    # starts from A12, so skip the first 11 rows
                             usecols=lambda x: x not in [5, 6])   # column indices in pandas are zero-based, so F = 5, G = 6.
-    
+        # check how many columns are in the dataframe
+        num_columns = df.shape[1]
+
         # Rename the columns
         column_names = ['SITCA Domestic', '理柏 ID', 'ISIN 代碼', '名稱', '基金貨幣', '1M', '1M排名', '3M',
                         '3M排名', '6M', '6M排名', '1Y', '1Y排名', '2Y', '2Y排名', '3Y', '3Y排名', '5Y', '5Y排名',
                         '10Y', '10Y排名', '波動度 1Y', '波動度 3Y', '波動度 4Y']
-        df.columns = column_names
+        
+        column_names_20 = ['SITCA Domestic', '理柏 ID', 'ISIN 代碼', '名稱', '基金貨幣', '1M', '1M排名', '3M',
+                        '3M排名', '6M', '6M排名', '1Y', '1Y排名', '2Y', '2Y排名', '3Y', '3Y排名',
+                        '波動度 1Y', '波動度 3Y', '波動度 4Y']
+        
+        # if the dataframe doesn't have 24 columns, then use column_names_20
+        if num_columns == 24:
+            df.columns = column_names
+        elif num_columns == 20:
+            df.columns = column_names_20
 
-        # Drop rows where column B is blank
-        df = df.dropna(subset=['理柏 ID'])
-
-        # Reset the index of the DataFrame
-        df = df.reset_index(drop=True)
-
-        # Determine the last row based on the presence of data in column B
-        last_row_index = df['理柏 ID'].last_valid_index()
-        data = df.loc[:last_row_index]
 
     elif selected_sheet_name == '境外(USD計價) -  ':
         # Load the Overseas worksheet into a DataFrame, excluding columns A(0)
@@ -42,17 +45,26 @@ def data_organize(file_path, selected_sheet_name):
                         'Aggregate Fund Value USD 數值', '1M', '1M排名', '3M', '3M排名', '6M', '6M排名', 
                         '1Y', '1Y排名', '2Y', '2Y排名', '3Y', '3Y排名', '5Y', '5Y排名',
                         '10Y', '10Y排名', '波動度 1Y', '波動度 3Y']
-        df.columns = column_names
+        
+        column_names_21 = ['理柏環球分類', '理柏 ID', 'ISIN 代碼', '名稱', '基金貨幣', 'Aggregate Fund Value USD 日期',
+                        'Aggregate Fund Value USD 數值', '1M', '1M排名', '3M', '3M排名', '6M', '6M排名', 
+                        '1Y', '1Y排名', '2Y', '2Y排名', '3Y', '3Y排名', '波動度 1Y', '波動度 3Y']
 
-        # Drop rows where column B is blank
-        df = df.dropna(subset=['理柏 ID'])
+        # if the dataframe doesn't have 25 columns, then use column_names_21
+        if num_columns == 25:
+            df.columns = column_names
+        elif num_columns == 21:
+            df.columns = column_names_20
 
-        # Reset the index of the DataFrame
-        df = df.reset_index(drop=True)
+    # Drop rows where column B is blank
+    df = df.dropna(subset=['理柏 ID'])
 
-        # Determine the last row based on the presence of data in column B
-        last_row_index = df['理柏 ID'].last_valid_index()
-        data = df.loc[:last_row_index]
+    # Reset the index of the DataFrame
+    df = df.reset_index(drop=True)
+
+    # Determine the last row based on the presence of data in column B
+    last_row_index = df['理柏 ID'].last_valid_index()
+    data = df.loc[:last_row_index]
     
     return data
 
@@ -142,8 +154,15 @@ if uploaded_file is not None:
     figures = ['1M排名', '3M排名', '6M排名', '1Y排名', '2Y排名', '3Y排名', '5Y排名', '10Y排名']
     thresholds = [rank_1M, rank_3M, rank_6M, rank_1Y, rank_2Y, rank_3Y, rank_5Y, rank_10Y]
 
-    # Execute the filter functions
+    # Execute the data organizer
     data = data_organize(uploaded_file, selected_sheet_name)
+
+    # Adjust figures and thresholds based on the available columns
+    available_columns = data.columns.tolist()
+    figures = [figure for figure in figures if figure in available_columns]
+    thresholds = thresholds[:len(figures)]
+
+    # Execute the filter functions
     result = funds_filter(selected_sheet_name, data, classification, figures, thresholds)
 
     # Display the filtered results
