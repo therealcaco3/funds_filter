@@ -15,6 +15,7 @@ def data_organize(file_path, selected_sheet_name):
         df = pd.read_excel(file_path, sheet_name=selected_sheet_name, header=None,
                             skiprows=11,    # starts from A12, so skip the first 11 rows
                             usecols=lambda x: x not in [5, 6])   # column indices in pandas are zero-based, so F = 5, G = 6.
+        
         # check how many columns are in the dataframe
         num_columns = df.shape[1]
 
@@ -39,8 +40,11 @@ def data_organize(file_path, selected_sheet_name):
         df = pd.read_excel(file_path, sheet_name=selected_sheet_name, header=None,
                         skiprows=11,    # starts from A12, so skip the first 11 rows
                         usecols=lambda x: x not in [0])   # column indices in pandas are zero-based
-
-        # Optional: Rename the columns if needed
+        
+        # check how many columns are in the dataframe
+        num_columns = df.shape[1]
+        
+        # Rename the columns
         column_names = ['理柏環球分類', '理柏 ID', 'ISIN 代碼', '名稱', '基金貨幣', 'Aggregate Fund Value USD 日期',
                         'Aggregate Fund Value USD 數值', '1M', '1M排名', '3M', '3M排名', '6M', '6M排名', 
                         '1Y', '1Y排名', '2Y', '2Y排名', '3Y', '3Y排名', '5Y', '5Y排名',
@@ -50,7 +54,7 @@ def data_organize(file_path, selected_sheet_name):
                         'Aggregate Fund Value USD 數值', '1M', '1M排名', '3M', '3M排名', '6M', '6M排名', 
                         '1Y', '1Y排名', '2Y', '2Y排名', '3Y', '3Y排名', '波動度 1Y', '波動度 3Y', '理柏ID']
 
-        # if the dataframe doesn't have 25 columns, then use column_names_21
+        # if the dataframe doesn't have 25 columns, then use column_names_22
         if num_columns == 25:
             df.columns = column_names
         elif num_columns == 22:
