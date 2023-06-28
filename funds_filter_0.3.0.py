@@ -46,15 +46,15 @@ def data_organize(file_path, selected_sheet_name):
                         '1Y', '1Y排名', '2Y', '2Y排名', '3Y', '3Y排名', '5Y', '5Y排名',
                         '10Y', '10Y排名', '波動度 1Y', '波動度 3Y']
         
-        column_names_21 = ['理柏環球分類', '理柏 ID', 'ISIN 代碼', '名稱', '基金貨幣', 'Aggregate Fund Value USD 日期',
+        column_names_22 = ['理柏環球分類', '理柏 ID', 'ISIN 代碼', '名稱', '基金貨幣', 'Aggregate Fund Value USD 日期',
                         'Aggregate Fund Value USD 數值', '1M', '1M排名', '3M', '3M排名', '6M', '6M排名', 
-                        '1Y', '1Y排名', '2Y', '2Y排名', '3Y', '3Y排名', '波動度 1Y', '波動度 3Y']
+                        '1Y', '1Y排名', '2Y', '2Y排名', '3Y', '3Y排名', '波動度 1Y', '波動度 3Y', '理柏ID']
 
         # if the dataframe doesn't have 25 columns, then use column_names_21
         if num_columns == 25:
             df.columns = column_names
-        elif num_columns == 21:
-            df.columns = column_names_20
+        elif num_columns == 22:
+            df.columns = column_names_22
 
     # Drop rows where column B is blank
     df = df.dropna(subset=['理柏 ID'])
